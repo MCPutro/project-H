@@ -1,0 +1,75 @@
+    package interfaces;
+
+
+    import java.awt.Dimension;
+    import java.awt.Graphics;
+    import java.awt.Image;
+    import java.awt.MediaTracker;
+    import java.awt.Panel;
+    import java.awt.Toolkit;
+
+    class zoomGambar extends Panel{
+        MediaTracker tracker;
+        Image img;
+        Dimension imgSize,iniSize;
+
+        public zoomGambar(){
+//            setSize(400,275);
+            img=Toolkit.getDefaultToolkit().getImage("C:\\Users\\Mu'ti C Putro\\Documents\\NetBeansProjects\\zomzom\\src\\gambar\\0.jpg");
+            tracker=new MediaTracker(this);
+            tracker.addImage(img,1);
+
+            try{
+                tracker.waitForAll();
+            }
+            catch(Exception ie){}
+                imgSize=iniSize=new Dimension(img.getWidth(this),img.getHeight(this));
+        }
+        
+        public zoomGambar(String url){
+            img=Toolkit.getDefaultToolkit().getImage(url);
+            tracker=new MediaTracker(this);
+            tracker.addImage(img,1);
+
+            try{
+                tracker.waitForAll();
+            }
+            catch(Exception ie){}
+                imgSize=iniSize=new Dimension(img.getWidth(this),img.getHeight(this));
+        }
+
+        @Override
+        public Dimension getPreferredSize(){
+            return new Dimension(imgSize);
+        }
+
+        @Override
+        public void paint(Graphics g){
+            if(imgSize.width<=iniSize.width)
+                imgSize=iniSize; 
+                g.drawImage(img,(getWidth()-imgSize.width)/2,(getHeight()-imgSize.height)/2,imgSize.width,imgSize.height,this);
+        }
+        
+        public void increaseSize(){
+            int x=10*imgSize.width/100; 
+            int y=10*imgSize.height/100;
+            imgSize=new Dimension(imgSize.width+x,imgSize.height+y); 
+            if(imgSize.width>iniSize.width){
+                setSize(imgSize);
+                getParent().doLayout();
+            }
+            repaint();
+        }
+        
+        
+        public void decreaseSize(){
+            int x=10*imgSize.width/100;
+            int y=10*imgSize.height/100;
+            imgSize=new Dimension(imgSize.width-x,imgSize.height-y);
+            if(getWidth()>iniSize.width){
+                setSize(imgSize);
+                getParent().doLayout();
+            }
+            repaint();
+        }
+    }
